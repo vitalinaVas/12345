@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HanGajOk — вязки собак</title>
+<style>
+
+.card-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #e8721c;
+    --primary-dark: #c95c0a;
+    --primary-light: #ff8f3f;
+    --accent: #ffb066;
+    --bg: #fff8f2;
+    --card: #ffffff;
+    --text: #2a1f14;
+    --muted: #8a7566;
+    --border: #f0e0d0;
+    --danger: #d64545;
+    --success: #2e9e5b;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white; padding: 1rem 2rem;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(232,114,28,0.25);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .logo { font-size: 1.4rem; font-weight: 700; cursor: pointer; user-select: none; }
+  .logo span { color: var(--accent); }
+  nav { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  nav a, nav button.link {
+    color: white; text-decoration: none; font-size: 0.95rem;
+    opacity: 0.95; cursor: pointer; background: none; border: none;
+    font-family: inherit; transition: opacity 0.2s; padding: 0;
+  }
+  nav a:hover, nav button.link:hover { opacity: 1; text-decoration: underline; }
+  .user-chip {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.2); padding: 0.4rem 0.9rem;
+    border-radius: 20px; font-size: 0.9rem; cursor: pointer;
+  }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.8rem;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white; padding: 3.5rem 2rem 3rem; text-align: center;
+  }
+  .hero h1 { font-size: 2.3rem; margin-bottom: 1rem; }
+  .hero p { font-size: 1.05rem; max-width: 650px; margin: 0 auto 2rem; opacity: 0.95; }
+  .search-bar {
+    max-width: 600px; margin: 0 auto; display: flex;
+    background: white; border-radius: 50px; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .search-bar input {
+    flex: 1; border: none; padding: 1rem 1.5rem; font-size: 1rem; outline: none; font-family: inherit;
+  }
+  .search-bar button {
+    background: var(--primary-dark); color: white; border: none;
+    padding: 0 2rem; font-size: 1rem; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .search-bar button:hover { background: #a84a08; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+  .filters {
+    display: flex; gap: 0.8rem; flex-wrap: wrap;
+    margin-bottom: 2rem; align-items: center;
+  }
+  .filters select, .filters label {
+    padding: 0.6rem 1rem; border-radius: 10px;
+    border: 1px solid var(--border); background: white;
+    font-size: 0.95rem; cursor: pointer; font-family: inherit;
+  }
+  .filters label {
+    display: flex; align-items: center; gap: 0.5rem; user-select: none;
+  }
+  .btn {
+    background: var(--primary); color: white; border: none;
+    padding: 0.7rem 1.5rem; border-radius: 10px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: background 0.2s;
+    font-family: inherit; display: inline-block;
+  }
+
+
+
+
+
+
+  .btn:hover { background: var(--primary-dark); }
+  .btn.outline {
+    background: transparent; color: var(--primary); border: 2px solid var(--primary);
+  }
+  .btn.outline:hover { background: #fff0e2; }
+  .btn.danger { background: var(--danger); }
+  .btn.danger:hover { background: #b03030; }
+  .btn.small { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+
+.btn-add { margin-left: auto; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--card); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 2px 12px rgba(232,114,28,0.08); cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(232,114,28,0.2); }
+  .card-img {
+    height: 220px; background-size: cover; background-position: center; position: relative;
+    background-color: #ffe8d0;
+    overflow: hidden;
+  }
+  .badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.95); padding: 0.3rem 0.7rem;
+    border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--primary-dark);
+  }
+  .badge.female { color: #c0417a; }
+  .badge.mine {
+    top: 12px; left: 12px; right: auto; background: var(--primary); color: white;
+  }
+  .card-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
+  .card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .card-breed { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
+  .tag {
+    background: #fff0e2; color: var(--primary-dark); font-size: 0.75rem;
+    padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;
+  }
+  .tag.warn { background: #fff4d6; color: #b8762a; }
+  .empty { text-align: center; padding: 4rem 2rem; color: var(--muted); grid-column: 1 / -1; }
+  .empty .big { font-size: 3rem; margin-bottom: 1rem; }
+
+  /* Модальные окна */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(40,20,5,0.6);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; padding: 1rem; overflow-y: auto;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: white; border-radius: 16px;
+    max-width: 560px; width: 100%; max-height: 92vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-img { height: 260px; background-size: cover; background-position: center; background-color: #ffe8d0;overflow: hidden; }
+  .modal-body { padding: 1.5rem 2rem 2rem; }
+  .modal-close {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.95); border: none;
+    width: 36px; height: 36px; border-radius: 50%;
+    font-size: 1.1rem; cursor: pointer; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+  }
+  .modal-close:hover { background: #ffe0c2; }
+  .modal h2 { margin-bottom: 0.3rem; font-size: 1.4rem; }
+  .modal .subtitle { color: var(--muted); margin-bottom: 1.2rem; }
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.2rem 0;
+  }
+  .info-item { font-size: 0.9rem; }
+  .info-item strong {
+    display: block; color: var(--muted); font-weight: 500;
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+  }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.7rem; border: 2px solid var(--border);
+    border-radius: 10px; font-size: 0.95rem; font-family: inherit; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-error {
+    background: #fdecea; color: var(--danger); padding: 0.7rem 1rem;
+    border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem;
+    border-left: 4px solid var(--danger);
+  }
+  .form-success {
+    background: #eaf7ef; color: var(--success); padding: 0.7rem 1rem;
+
+border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem;
+    border-left: 4px solid var(--success);
+  }
+  .form-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .form-tabs button {
+    background: none; border: none; padding: 0.7rem 1rem;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    color: var(--muted); border-bottom: 3px solid transparent;
+    font-family: inherit; margin-bottom: -2px;
+  }
+  .form-tabs button.active {
+    color: var(--primary); border-bottom-color: var(--primary);
+  }
+  .demo-accounts {
+    background: #fff0e2; border-radius: 10px; padding: 1rem;
+    margin-top: 1.2rem; font-size: 0.85rem; color: var(--primary-dark);
+    border-left: 4px solid var(--primary);
+  }
+  .demo-accounts strong { display: block; margin-bottom: 0.5rem; }
+  .demo-accounts code {
+    background: white; padding: 0.15rem 0.4rem; border-radius: 4px;
+    font-size: 0.8rem; color: var(--text);
+  }
+
+  /* Кабинет */
+  .cabinet-header {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+    padding-bottom: 1.5rem; border-bottom: 2px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .cabinet-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; font-weight: 700; flex-shrink: 0;
+  }
+  .cabinet-info h2 { margin-bottom: 0.2rem; }
+  .cabinet-info p { color: var(--muted); font-size: 0.9rem; }
+  .cabinet-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .cabinet-tabs button {
+    background: white; border: 2px solid var(--border);
+    padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600; font-family: inherit;
+    color: var(--muted); transition: all 0.2s;
+  }
+  .cabinet-tabs button.active {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+  .cabinet-tabs button:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+  /* Чат */
+  .chat-layout {
+    display: grid; grid-template-columns: 300px 1fr;
+    height: 72vh; min-height: 500px;
+    background: white; border-radius: 16px;
+    overflow: hidden; box-shadow: 0 2px 12px rgba(232,114,28,0.1);
+    border: 1px solid var(--border);
+  }
+  .chat-sidebar {
+    border-right: 2px solid var(--border); overflow-y: auto;
+    background: #fffaf5;
+  }
+  .chat-sidebar-header {
+    padding: 1rem 1.2rem; font-weight: 700; border-bottom: 2px solid var(--border);
+    background: white; position: sticky; top: 0; z-index: 1;
+  }
+  .dialog-item {
+    padding: 1rem 1.2rem; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .dialog-item:hover { background: #fff0e2; }
+  .dialog-item.active { background: #ffe0c2; }
+  .dialog-item .name {
+    font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem;
+    display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+  }
+  .dialog-item .last-msg {
+    color: var(--muted); font-size: 0.85rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .unread-badge {
+    background: var(--primary); color: white; font-size: 0.7rem;
+    padding: 0.15rem 0.5rem; border-radius: 10px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .chat-main { display: flex; flex-direction: column; min-width: 0; }
+  .chat-header {
+    padding: 1rem 1.5rem; border-bottom: 2px solid var(--border);
+    font-weight: 600; background: white;
+    display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+  }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 0.7rem;
+    background: #fffaf5;
+  }
+  .msg {
+    max-width: 72%; padding: 0.7rem 1rem; border-radius: 16px;
+    font-size: 0.95rem; word-wrap: break-word; line-height: 1.4;
+
+}
+  .msg.me {
+    background: var(--primary); color: white;
+    align-self: flex-end; border-bottom-right-radius: 4px;
+  }
+  .msg.them {
+    background: white; color: var(--text);
+    align-self: flex-start; border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(232,114,28,0.12);
+  }
+  .msg-time { font-size: 0.7rem; opacity: 0.75; margin-top: 0.3rem; }
+  .chat-input {
+    display: flex; gap: 0.5rem; padding: 1rem;
+    border-top: 2px solid var(--border); background: white;
+  }
+
+
+
+/* Кнопка удаления сообщения */
+.msg-delete {
+  position: absolute;
+  top: 4px;
+  left: -28px;
+  background: rgba(214, 69, 69, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 0.65rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+.msg.me:hover .msg-delete {
+  display: flex;
+}
+.msg-delete:hover {
+  background: var(--danger);
+}
+
+
+  .chat-input input {
+    flex: 1; padding: 0.7rem 1.2rem; border: 2px solid var(--border);
+    border-radius: 24px; outline: none; font-size: 0.95rem; font-family: inherit;
+  }
+  .chat-input input:focus { border-color: var(--primary); }
+  .chat-input button {
+    background: var(--primary); color: white; border: none;
+    padding: 0 1.5rem; border-radius: 24px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .chat-input button:hover { background: var(--primary-dark); }
+  .chat-empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); padding: 2rem; text-align: center;
+  }
+  .chat-empty .big { font-size: 3rem; margin-bottom: 0.5rem; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--text); color: white; padding: 0.9rem 1.5rem;
+    border-radius: 12px; font-size: 0.95rem; z-index: 3000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0;
+    transition: all 0.3s;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 1.6rem; }
+    .hero { padding: 2.5rem 1rem 2rem; }
+    .container { padding: 1.2rem; }
+    .info-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .chat-layout { grid-template-columns: 1fr; height: auto; min-height: auto; }
+    .chat-sidebar { max-height: 200px; }
+    .chat-main { height: 500px; }
+    nav { gap: 0.6rem; }
+    nav a, nav button.link { font-size: 0.85rem; }
+    header { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.15rem; }
+  }
+  .card-price {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 0.4rem;
+  }
+  .card-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+    line-height: 1.4;
+  }
+  .modal-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0.4rem 0 0.8rem;
+  }
+  .modal-desc {
+    background: #fffaf5;
+    border-left: 4px solid var(--primary);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 1rem 0;
+    white-space: pre-wrap;
+  }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" onclick="showPage('home')">🐾  Han <span>GajOk</span></div>
+    <nav>
+      <a onclick="showPage('home')">Каталог</a>
+      <a onclick="showPage('cabinet')">Кабинет</a>
+      <a onclick="showPage('chat')">Чат
+        <span id="unreadTotal" style="display:none;background:#ffb066;color:#2a1f14;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:10px;margin-left:0.2rem;font-weight:700;"></span>
+      </a>
+      <div id="authArea"></div>
+    </nav>
+  </div>
+</header>
+
+<!-- ГЛАВНАЯ -->
+<main id="page-home">
+  <section class="hero">
+    <h1>Найдите идеальную пару для вязки</h1>
+    <p>Верифицированные племенные собаки, подтверждённые health-тесты и проверка генетической совместимости</p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Порода, кличка или питомник...">
+      <button onclick="applyFilters()">Найти</button>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="filters">
+      <select id="breedFilter" onchange="applyFilters()">
+        <option value="">Все породы</option>
+  	<optgroup label="Крупные породы">
+    	  <option>Немецкая овчарка</option>
+    	  <option>Лабрадор-ретривер</option>
+    	  <option>Золотистый ретривер</option>
+       	  <option>Сибирский хаски</option>
+      	  <option>Аляскинский маламут</option>
+      	  <option>Ротвейлер</option>
+    	  <option>Доберман</option>
+    	  <option>Кане-корсо</option>
+    	  <option>Бернский зенненхунд</option>
+    	  <option>Ньюфаундленд</option>
+    	  <option>Сенбернар</option>
+    	  <option>Тибетский мастиф</option>
+    	  <option>Кавказская овчарка</option>
+    	  <option>Среднеазиатская овчарка</option>
+    	  <option>Большой швейцарский зенненхунд</option>
+    	<option>Маремма-абруццкая овчарка</option>
+  	</optgroup>
+  	  <optgroup label="Средние породы">
+    	  <option>Корги (вельш-корги пемброк)</option>
+    	  <option>Австралийская овчарка</option>
+    	  <option>Бордер-колли</option>
+    	  <option>Шелти</option>
+    	  <option>Пудель (средний)</option>
+    	  <option>Американская акита</option>
+    	  <option>Акита-ину</option>
+    	  <option>Самоедская собака</option>
+          <option>Чау-чау</option>
+      	  <option>Далматин</option>
+      	  <option>Боксёр</option>
+          <option>Американский булли</option>
+          <option>Стаффордширский бультерьер</option>
+          <option>Английский бульдог</option>
+          <option>Французский бульдог</option>
+          <option>Бассет-хаунд</option>
+          <option>Бигль</option>
+          <option>Кокер-спаниель</option>
+          <option>Английский спрингер-спаниель</option>
+    	  <option>Русский охотничий спаниель</option>
+    	  <option>Веймаранер</option>
+    	  <option>Венгерская выжла</option>
+    	  <option>Курцхаар</option>
+        </optgroup>
+  	<optgroup label="Мелкие породы">
+    	  <option>Джек-рассел-терьер</option>
+    	  <option>Вест-хайленд-уайт-терьер</option>
+    	  <option>Йоркширский терьер</option>
+    	  <option>Мопс</option>
+    	  <option>Ши-тцу</option>
+    	  <option>Мальтийская болонка (мальтезе)</option>
+    	  <option>Болоньез</option>
+    	  <option>Папильон</option>
+    	  <option>Померанский шпиц</option>
+    	  <option>Немецкий шпиц</option>
+    	  <option>Чихуахуа (гладкошёрстный)</option>
+    	  <option>Чихуахуа (длинношёрстный)</option>
+    	  <option>Той-пудель</option>
+    	  <option>Карликовый пудель</option>
+    	  <option>Брюссельский гриффон</option>
+    	  <option>Пекинес</option>
+    	  <option>Японский хин</option>
+    	  <option>Китайская хохлатая</option>
+    	  <option>Левретка (малая итальянская борзая)</option>
+    	  <option>Русский той</option>
+  </optgroup>
+  <optgroup label="Прочие / метисы">
+    <option>Метис (не породистая)</option>
+    <option>Другая порода</option>
+  </optgroup>
+      </select>
+      <select id="genderFilter" onchange="applyFilters()">
+        <option value="">Оба пола</option>
+        <option value="Кобель">Кобели</option>
+        <option value="Сука">Суки</option>
+      </select>
+      <label>
+        <input type="checkbox" id="testsFilter" onchange="applyFilters()">
+        Только с health-тестами
+
+</label>
+      <button class="btn btn-add" onclick="openAddForm()">+ Добавить объявление</button>
+    </div>
+    <div class="grid" id="dogGrid"></div>
+  </div>
+</main>
+
+<!-- КАБИНЕТ -->
+<main id="page-cabinet" style="display:none">
+  <div class="container" id="cabinetContent"></div>
+</main>
+
+<!-- ЧАТ -->
+<main id="page-chat" style="display:none">
+  <div class="container">
+    <div id="chatContainer"></div>
+  </div>
+</main>
+
+<!-- Модалка: карточка собаки -->
+<div class="modal-overlay" id="dogModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('dogModal')">✕</button>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Модалка: добавление/редактирование собаки -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    <div class="modal-body">
+      <h2 id="addFormTitle">Новое объявление</h2>
+      <p class="subtitle">Заполните данные о собаке</p>
+      <form id="addForm" onsubmit="submitDog(event)">
+        <input type="hidden" name="editId">
+        <div class="form-group">
+          <label>Кличка *</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Порода *</label>
+            <select name="breed" id="breedSelect" required>
+  <option value="">Выберите породу</option>
+  <optgroup label="Крупные породы">
+    <option>Немецкая овчарка</option>
+    <option>Лабрадор-ретривер</option>
+    <option>Золотистый ретривер</option>
+    <option>Сибирский хаски</option>
+    <option>Аляскинский маламут</option>
+    <option>Ротвейлер</option>
+    <option>Доберман</option>
+    <option>Кане-корсо</option>
+    <option>Бернский зенненхунд</option>
+    <option>Ньюфаундленд</option>
+    <option>Сенбернар</option>
+    <option>Тибетский мастиф</option>
+    <option>Кавказская овчарка</option>
+    <option>Среднеазиатская овчарка</option>
+    <option>Большой швейцарский зенненхунд</option>
+    <option>Маремма-абруццкая овчарка</option>
+  </optgroup>
+  <optgroup label="Средние породы">
+    <option>Корги (вельш-корги пемброк)</option>
+    <option>Австралийская овчарка</option>
+    <option>Бордер-колли</option>
+    <option>Шелти</option>
+    <option>Пудель (средний)</option>
+    <option>Американская акита</option>
+    <option>Акита-ину</option>
+    <option>Самоедская собака</option>
+    <option>Чау-чау</option>
+    <option>Далматин</option>
+    <option>Боксёр</option>
+    <option>Американский булли</option>
+    <option>Стаффордширский бультерьер</option>
+    <option>Английский бульдог</option>
+    <option>Французский бульдог</option>
+    <option>Бассет-хаунд</option>
+    <option>Бигль</option>
+    <option>Кокер-спаниель</option>
+    <option>Английский спрингер-спаниель</option>
+    <option>Русский охотничий спаниель</option>
+    <option>Веймаранер</option>
+    <option>Венгерская выжла</option>
+    <option>Курцхаар</option>
+  </optgroup>
+  <optgroup label="Мелкие породы">
+    <option>Джек-рассел-терьер</option>
+    <option>Вест-хайленд-уайт-терьер</option>
+    <option>Йоркширский терьер</option>
+    <option>Мопс</option>
+    <option>Ши-тцу</option>
+    <option>Мальтийская болонка (мальтезе)</option>
+    <option>Болоньез</option>
+    <option>Папильон</option>
+    <option>Померанский шпиц</option>
+    <option>Немецкий шпиц</option>
+    <option>Чихуахуа (гладкошёрстный)</option>
+    <option>Чихуахуа (длинношёрстный)</option>
+    <option>Той-пудель</option>
+    <option>Карликовый пудель</option>
+    <option>Брюссельский гриффон</option>
+    <option>Пекинес</option>
+    <option>Японский хин</option>
+    <option>Китайская хохлатая</option>
+    <option>Левретка (малая итальянская борзая)</option>
+    <option>Русский той</option>
+  </optgroup>
+  <optgroup label="Прочие / метисы">
+    <option>Метис (не породистая)</option>
+    <option>Другая порода</option>
+  </optgroup>
+</select>
+          </div>
+          <div class="form-group">
+            <label>Пол *</label>
+            <select name="gender" required>
+              <option value="">Выберите</option>
+              <option>Кобель</option>
+              <option>Сука</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Возраст (лет) *</label>
+            <input type="number" name="age" min="1" max="15" required>
+          </div>
+          <div class="form-group">
+            <label>Контакт *</label>
+            <input type="text" name="contact" placeholder="телефон или email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Health-тесты (через запятую)</label>
+          <input type="text" name="tests" placeholder="HD-A, ED-0, PL-0">
+        </div>
+        <div class="form-group">
+          <label>Титулы (через запятую)</label>
+          <input type="text" name="titles" placeholder="ЧР, CACIB">
+        </div>
+
+
+        <div class="form-group">
+          <label>💰 Цена (₽)</label>
+          <input type="number" name="price" min="0" step="100" placeholder="Например, 15000. Оставьте пустым, если договорная">
+          <div class="hint">Оставьте пустым или 0 — будет «Договорная»</div>
+        </div>
+
+        <div class="form-group">
+          <label>📝 Описание объявления</label>
+          <textarea name="description" rows="4" maxlength="1000" placeholder="Расскажите о собаке: характер, условия вязки, требования к партнёру..."></textarea>
+        </div>
+
+
+	<div class="form-group">
+	  <label>Город *</label>
+	  <select name="city" id="dogCitySelect" required onchange="handleCityChange(this, 'dogCityCustom')">
+	    ${'' /* заполняется через JS */}
+	  </select>
+	  <input type="text" id="dogCityCustom" name="cityCustom" placeholder="Введите город" style="display:none;margin-top:0.5rem;">
+	</div>
+
+
+        <div class="form-group">
+          <label>Ссылка на фото</label>
+
+
+          <input type="url" name="photo" placeholder="https://...">
+        </div>
+        <button type="submit" class="btn" style="width:100%;margin-top:0.5rem;">Сохранить</button>
+      </form>
+<!-- Документы -->
+<div class="form-group">
+  <label>📄 Документы (родословная, РКФ, метрика)</label>
+
+  <input type="file" id="docsInput" accept="image/*" multiple style="display:none" onchange="handleDocsUpload(event)">
+  <input type="hidden" name="documents" id="documentsData">
+
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <button type="button" class="btn outline" onclick="document.getElementById('docsInput').click()">
+      📁 Загрузить документы
+    </button>
+    <button type="button" class="btn outline" onclick="document.getElementById('docsInput').click()">
+      📷 Сфотографировать
+    </button>
+  </div>
+
+  <div id="docsPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.6rem;margin-top:0.8rem;"></div>
+  <div class="hint">Можно загрузить несколько документов. JPG, PNG. Каждый сжимается до 1200px.</div>
+</div>
+
+<!-- Прививки -->
+<div class="form-group">
+  <label>💉 Прививки (ветеринарный паспорт)</label>
+
+  <input type="file" id="vaccinesInput" accept="image/*" multiple style="display:none" onchange="handleVaccinesUpload(event)">
+  <input type="hidden" name="vaccines" id="vaccinesData">
+
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <button type="button" class="btn outline" onclick="document.getElementById('vaccinesInput').click()">
+      📁 Загрузить фото прививок
+    </button>
+    <button type="button" class="btn outline" onclick="document.getElementById('vaccinesInput').click()">
+      📷 Сфотографировать
+    </button>
+  </div>
+
+  <div id="vaccinesPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.6rem;margin-top:0.8rem;"></div>
+  <div class="hint">Фото страницы ветпаспорта с отметками о прививках</div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: авторизация -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+    <div class="modal-body">
+      <div class="form-tabs">
+        <button id="tabLogin" class="active" onclick="switchAuthTab('login')">Вход</button>
+        <button id="tabRegister" onclick="switchAuthTab('register')">Регистрация</button>
+      </div>
+
+      <div id="authError" class="form-error" style="display:none;"></div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Пароль *</label>
+          <input type="password" name="password" required>
+        </div>
+
+<button type="submit" class="btn" style="width:100%;">Войти</button>
+      </form>
+
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+        <div class="form-group">
+          <label>Имя *</label>
+          <input type="text" name="name" required minlength="2">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Пароль (минимум 6 символов) *</label>
+          <input type="password" name="password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Роль *</label>
+          <select name="role" required>
+            <option value="owner">Владелец собаки</option>
+            <option value="breeder">Заводчик / питомник</option>
+          </select>
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Зарегистрироваться</button>
+      </form>
+
+      <div class="demo-accounts">
+        <strong>Демо-аккаунты для быстрого теста:</strong>
+        <div>Анна: <code>anna@demo.ru</code> / <code>123456</code></div>
+        <div>Борис: <code>boris@demo.ru</code> / <code>123456</code></div>
+        <div>Питомник: <code>pitomnik@demo.ru</code> / <code>123456</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: первое сообщение -->
+<div class="modal-overlay" id="msgModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('msgModal')">✕</button>
+    <div class="modal-body">
+      <h2>Написать сообщение</h2>
+      <p class="subtitle" id="msgSubtitle"></p>
+      <form onsubmit="sendFirstMessage(event)">
+        <input type="hidden" name="toUserId" id="msgToUserId">
+        <input type="hidden" name="subject" id="msgSubject">
+        <div class="form-group">
+          <label>Сообщение *</label>
+          <textarea name="text" rows="4" required placeholder="Здравствуйте! Интересует вязка..."></textarea>
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Отправить</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ХРАНИЛИЩЕ
+   ============================================================ */
+const STORAGE = {
+  users: 'pk_users_v2',
+  dogs: 'pk_dogs_v2',
+  messages: 'pk_messages_v2',
+  session: 'pk_session_v2'
+};
+/* ============================================================
+   СПИСОК ГОРОДОВ
+   ============================================================ */
+const CITIES = [
+  'Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань',
+  'Нижний Новгород', 'Челябинск', 'Самара', 'Омск', 'Ростов-на-Дону',
+  'Уфа', 'Красноярск', 'Воронеж', 'Пермь', 'Волгоград',
+  'Краснодар', 'Саратов', 'Тюмень', 'Тольятти', 'Ижевск',
+  'Барнаул', 'Ульяновск', 'Иркутск', 'Хабаровск', 'Ярославль',
+  'Владивосток', 'Махачкала', 'Томск', 'Оренбург', 'Кемерово',
+  'Новокузнецк', 'Рязань', 'Астрахань', 'Пенза', 'Липецк',
+  'Тула', 'Киров', 'Чебоксары', 'Калининград', 'Курск',
+  'Улан-Удэ', 'Ставрополь', 'Магнитогорск', 'Сочи', 'Тверь',
+  'Иваново', 'Брянск', 'Белгород', 'Сургут', 'Владимир',
+  'Нижний Тагил', 'Архангельск', 'Чита', 'Калуга', 'Смоленск',
+  'Волжский', 'Курган', 'Череповец', 'Орёл', 'Вологда',
+  'Мурманск', 'Якутск', 'Тамбов', 'Стерлитамак', 'Грозный',
+  'Кострома', 'Петрозаводск', 'Нижневартовск', 'Йошкар-Ола', 'Новороссийск',
+  'Химки', 'Таганрог', 'Комсомольск-на-Амуре', 'Сыктывкар', 'Нальчик',
+  'Нижнекамск', 'Шахты', 'Дзержинск', 'Орск', 'Братск',
+  'Ангарск', 'Благовещенск', 'Энгельс', 'Королёв', 'Великий Новгород',
+  'Старый Оскол', 'Псков', 'Мытищи', 'Люберцы', 'Южно-Сахалинск',
+  'Балашиха', 'Пятигорск', 'Красногорск', 'Кисловодск', 'Геленджик',
+  'Анапа', 'Ялта', 'Севастополь', 'Симферополь', 'Донецк',
+  'Луганск', 'Минск', 'Алматы', 'Астана', 'Бишкек',
+  'Ташкент', 'Ереван', 'Тбилиси', 'Баку', 'Кишинёв'
+];
+
+function cityOptionsHtml(selected) {
+  const sel = (selected || '').trim();
+  let html = '<option value="">Выберите город</option>';
+  CITIES.forEach(c => {
+    html += `<option value="${escapeAttr(c)}" ${c === sel ? 'selected' : ''}>${escapeHtml(c)}</option>`;
+  });
+  // Если город сохранён, но его нет в списке (старая запись) — добавим
+  if (sel && !CITIES.includes(sel)) {
+    html += `<option value="${escapeAttr(sel)}" selected>${escapeHtml(sel)}</option>`;
+  }
+  html += '<option value="__other__">Другой город...</option>';
+  return html;
+}
+
+function cityFilterOptionsHtml(selected) {
+  const sel = (selected || '').trim();
+  let html = '<option value="">Все города</option>';
+  CITIES.forEach(c => {
+    html += `<option value="${escapeAttr(c)}" ${c === sel ? 'selected' : ''}>${escapeHtml(c)}</option>`;
+  });
+  if (sel && !CITIES.includes(sel)) {
+    html += `<option value="${escapeAttr(sel)}" selected>${escapeHtml(sel)}</option>`;
+  }
+  return html;
+}
+function getUsers() { try { return JSON.parse(localStorage.getItem(STORAGE.users) || '[]'); } catch(e){ return []; } }
+function saveUsers(u) { localStorage.setItem(STORAGE.users, JSON.stringify(u)); }
+
+function getDogs() { try { return JSON.parse(localStorage.getItem(STORAGE.dogs) || '[]'); } catch(e){ return []; } }
+function saveDogs(d) { localStorage.setItem(STORAGE.dogs, JSON.stringify(d)); }
+
+function getMessages() { try { return JSON.parse(localStorage.getItem(STORAGE.messages) || '[]'); } catch(e){ return []; } }
+function saveMessages(m) { localStorage.setItem(STORAGE.messages, JSON.stringify(m)); }
+
+/* Простой "хеш" пароля (для демо). В реальном проекте — bcrypt на сервере. */
+function simpleHash(str) {
+  let h = 5381;
+  const salt = 'plemennoy_krug_salt_v2';
+  const s = salt + str + salt;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) + h) + s.charCodeAt(i);
+    h = h & 0xffffffff;
+  }
+  return 'h_' + Math.abs(h).toString(36);
+}
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ ДЕМО-ДАННЫХ
+   ============================================================ */
+function initDemoData() {
+  // Пользователи
+  if (getUsers().length === 0) {
+    const pwd = simpleHash('123456');
+    saveUsers([
+      { id: 1, name: 'Анна Смирнова', email: 'anna@demo.ru', passwordHash: pwd, role: 'owner', createdAt: Date.now() },
+      { id: 2, name: 'Борис Кузнецов', email: 'boris@demo.ru', passwordHash: pwd, role: 'owner', createdAt: Date.now() },
+
+{ id: 3, name: 'Питомник «Альфа Гранд»', email: 'pitomnik@demo.ru', passwordHash: pwd, role: 'breeder', createdAt: Date.now() }
+    ]);
+  }
+
+  // Собаки
+  // Собаки
+  if (getDogs().length === 0) {
+    saveDogs([
+      {
+        id: 1, ownerId: 3, name: "Гром", breed: "Немецкая овчарка", gender: "Кобель",
+        age: 5, city: "Москва", price: 30000,
+        tests: ["HD-A", "ED-0", "PL-0", "DM-чисто"],
+        titles: ["ЧР", "CACIB", "Гранд Чемпион"],
+        description: "Титулованный племенной кобель из рабочей линии. Многократный победитель выставок РКФ. Устойчивая психика, отличные рабочие качества, полностью здоров. Вязки только с проверенными суками. Возможен выезд к суке по договорённости.",
+        photo: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=800&q=80",
+        contact: "+7 (999) 123-45-67",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 2
+      },
+      {
+        id: 2, ownerId: 1, name: "Мия", breed: "Лабрадор-ретривер", gender: "Сука",
+        age: 3, city: "Санкт-Петербург", price: 22000,
+        tests: ["HD-B", "ED-0", "PRA-clear"],
+        titles: ["ЧР", "ЮЧР"],
+        description: "Молодая здоровая сука с отличной родословной. Первый помёт был лёгким, щенки крупные и крепкие. Спокойная, ласковая, обожает детей. Ищу кобеля с полным пакетом health-тестов и подтверждённой родословной.",
+        photo: "https://www.bing.com/th/id/OIP.JXirs8uZyx0Q8Vo3BEP0QQHaE8?w=283&h=200&c=8&rs=1&qlt=90&o=6&pid=ImgMagVNext&rm=2",
+        contact: "anna@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 5
+      },
+      {
+        id: 3, ownerId: 2, name: "Тайфун", breed: "Сибирский хаски", gender: "Кобель",
+        age: 4, city: "Новосибирск", price: 0,
+        tests: ["HD-A", "ED-0", "Eye-clear"],
+        titles: ["ЧР", "Гранд Чемпион"],
+        description: "Энергичный титулованный кобель, победитель региональных выставок. Отличная шерсть, крепкий костяк, породная голова. Вязка договорная — обсуждается индивидуально в зависимости от суки и условий.",
+        photo: "https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=800&q=80",
+        contact: "boris@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 7
+      },
+      {
+        id: 4, ownerId: 3, name: "Санни", breed: "Золотистый ретривер", gender: "Сука",
+        age: 2, city: "Казань", price: 25000,
+        tests: ["HD-A", "ED-0", "GR-PRA1-clear", "GR-PRA2-clear"],
+        titles: ["ЮЧР", "CAC"],
+        description: "Перспективная молодая сука из титулованной линии. Полный набор генетических тестов, все отрицательные. Характер мягкий, уравновешенный. Готова к вязке с кобелем-чемпионом с аналогичным набором тестов.",
+        photo: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80",
+        contact: "pitomnik@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 1
+      },
+      {
+        id: 5, ownerId: 2, name: "Пряник", breed: "Корги (вельш-корги пемброк)", gender: "Кобель",
+        age: 3, city: "Екатеринбург", price: 18000,
+        tests: ["HD-A", "ED-0", "DM-чисто", "vWD-чисто"],
+        titles: ["ЧР"],
+        description: "Активный здоровый кобель с чистыми тестами на DM и vWD. Отличный экстерьер, стабильно занимает призовые места на выставках. Вязка возможна как на нашей территории, так и с выездом к суке.",
+        photo: "https://images.unsplash.com/photo-1612536057832-2ff7ead58194?w=800&q=80",
+        contact: "boris@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3
+      },
+      {
+        id: 6, ownerId: 1, name: "Изабелла", breed: "Пудель (средний)", gender: "Сука",
+        age: 4, city: "Нижний Новгород", price: 20000,
+        tests: ["HD-B", "ED-1", "prcd-PRA-clear"],
+        titles: ["ЧР", "CACIB"],
+        description: "Опытная сука, имела два успешных помёта. Умная, послушная, с отличной густой шерстью. Ищу кобеля аналогичного уровня с документами РКФ. Возможен обмен вязками или скидка за щенка.",
+        photo: "https://www.bing.com/th/id/OIP.-b_78vIxd4N1yYrKd5AefgHaEK?w=231&h=128&c=8&rs=1&qlt=90&o=6&pid=ImgAns&rm=2",
+        contact: "anna@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 10
+      },
+      {
+        id: 7, ownerId: 3, name: "Байкал", breed: "Аляскинский маламут", gender: "Кобель",
+        age: 6, city: "Красноярск", price: 35000,
+        tests: ["HD-A", "ED-0", "Eye-clear", "Polyneuropathy-clear"],
+        titles: ["ЧР", "CACIB", "Чемпион НКП"],
+        description: "Крупный мощный кобель с отличным костяком и породной головой. Чемпион НКП, многократный BOB. Спокойный, уверенный, отлично работает в упряжке. Вязки только с суками, имеющими полный набор health-тестов.",
+        photo: "https://images.unsplash.com/photo-1591769225440-811ad7d6eab3?w=800&q=80",
+        contact: "+7 (999) 123-45-67",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 14
+      },
+      {
+        id: 8, ownerId: 2, name: "Лаки", breed: "Джек-рассел-терьер", gender: "Сука",
+        age: 3, city: "Краснодар", price: 12000,
+        tests: ["HD-A", "ED-0", "PLL-clear", "SCA-clear"],
+        titles: ["ЮЧР", "ЧР"],
+        description: "Миниатюрная энергичная сука с отличным характером. Полный набор генетических тестов. Отлично подходит для охоты на лису и норных соревнований. Ищу кобеля такого же рабочего разведения с подтверждёнными тестами.",
+        photo: "https://th.bing.com/th/id/OIP.sK_SY6gzQSTsjzD6-1IsNgHaHa?w=310&h=198&c=7&rs=1&bgcl=fffffe&r=0&o=6&pid=AlgoBlockDebug",
+        contact: "boris@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 6
+      },
+      {
+        id: 9, ownerId: 1, name: "Феникс", breed: "Доберман", gender: "Кобель",
+        age: 4, city: "Ростов-на-Дону", price: 28000,
+        tests: ["HD-A", "ED-0", "vWD-clear", "DCM-echo-clear"],
+        titles: ["ЧР", "CAC"],
+        description: "Благородный кобель с отличными рабочими качествами и выставочным экстерьером. Прошёл полное кардиологическое обследование, vWD-clear. Отличный характер, устойчив к стрессу. Вязка на нашей территории.",
+        photo: "https://www.bing.com/th/id/OIP.5srkGgdpfMZKUaGxfw-GEQHaE8?w=266&h=200&c=8&rs=1&qlt=90&o=6&pid=ImgMagVNext&rm=2",
+        contact: "anna@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 8
+      },
+      {
+        id: 10, ownerId: 3, name: "Малина", breed: "Бернский зенненхунд", gender: "Сука",
+        age: 4, city: "Сочи", price: 24000,
+        tests: ["HD-B", "ED-0", "vWD-clear", "DM-clear"],
+        titles: ["ЧР", "Чемпион НКП"],
+        description: "Красивая сука с отличной шерстью и породным окрасом. Чемпион НКП, многократный призёр монопородных выставок. Здорова, все тесты чистые. Ищу кобеля-чемпиона с аналогичным набором тестов.",
+        photo: "https://th.bing.com/th/id/OIP.TafK2JvyVPd7wxyxdDVYNgHaEV?w=310&h=198&c=7&rs=1&bgcl=fffffd&r=0&o=6&pid=AlgoBlockDebug",
+        contact: "pitomnik@demo.ru",
+        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 4
+      }
+    ]);
+  }
+}
+
+/* ============================================================
+   СЕССИЯ
+   ============================================================ */
+function currentUser() {
+  const id = localStorage.getItem(STORAGE.session);
+  if (!id) return null;
+  return getUsers().find(u => u.id === Number(id)) || null;
+}
+function login(userId) {
+  localStorage.setItem(STORAGE.session, String(userId));
+  renderAuthArea();
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+}
+function logout() {
+  localStorage.removeItem(STORAGE.session);
+  renderAuthArea();
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+  showPage('home');
+  toast('Вы вышли из аккаунта');
+}
+
+/* ============================================================
+   UI: авторизация в шапке
+   ============================================================ */
+function renderAuthArea() {
+  const area = document.getElementById('authArea');
+  const u = currentUser();
+  if (!u) {
+    area.innerHTML = '<button class="link" onclick="openAuth()">Вход / Регистрация</button>';
+  } else {
+    const initial = u.name.trim().charAt(0).toUpperCase();
+
+    // 👇 Если у пользователя есть загруженное фото — показываем его,
+    //    иначе — первую букву имени
+    const avatarInner = u.avatar
+      ? `<img src="${escapeAttr(u.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+      : escapeHtml(initial);
+
+    area.innerHTML = `
+      <div class="user-chip" onclick="showPage('cabinet')">
+        <div class="avatar" style="overflow:hidden;">${avatarInner}</div>
+        <span>${escapeHtml(u.name.split(' ')[0])}</span>
+      </div>
+      <button class="link" onclick="logout()">Выйти</button>
+    `;
+  }
+}
+
+/* ============================================================
+   НАВИГАЦИЯ
+   ============================================================ */
+function showPage(page) {
+  document.querySelectorAll('main[id^="page-"]').forEach(m => m.style.display = 'none');
+  const el = document.getElementById('page-' + page);
+  if (el) el.style.display = 'block';
+
+  if (page === 'cabinet') renderCabinet();
+  if (page === 'chat') { renderChat(); try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {} }
+  if (page === 'home') applyFilters();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   КАТАЛОГ
+   ============================================================ */
+function renderDogs(list) {
+  const grid = document.getElementById('dogGrid');
+  const me = currentUser();
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty"><div class="big">🔍</div>Ничего не найдено. Попробуйте изменить фильтры.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(d => {
+    const isMine = me && d.ownerId === me.id;
+    return `
+      <div class="card" onclick="showDog(${d.id})">
+        <div class="card-img">
+  <img src="${escapeAttr(d.photo || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80')}"
+       alt="${escapeAttr(d.name)}"
+       onerror="this.src='https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80'"
+       style="width:100%;height:100%;object-fit:cover;display:block;">
+  <span class="badge ${d.gender === 'Сука' ? 'female' : ''}">${escapeHtml(d.gender)}</span>
+  ${isMine ? '<span class="badge mine">Моё</span>' : ''}
+</div>
+        <div class="card-body">
+          <div class="card-name">${escapeHtml(d.name)}</div>
+          <div class="card-breed">${escapeHtml(d.breed)} • ${d.age} ${ageWord(d.age)}${d.city ? ' • 📍 ' + escapeHtml(d.city) : ''}</div>
+ 	  <div class="card-date">📅 ${formatDate(d.createdAt)}</div>
+
+          <div class="card-price">${formatPrice(d.price)}</div>
+
+          <div class="tags">
+            ${(d.tests || []).slice(0, 3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+            ${(d.titles || []).slice(0, 2).map(t => `<span class="tag warn">${escapeHtml(t)}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function ageWord(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'год';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'года';
+  return 'лет';
+}
+
+function applyFilters() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const breed = document.getElementById('breedFilter').value;
+  const gender = document.getElementById('genderFilter').value;
+  const onlyTests = document.getElementById('testsFilter').checked;
+
+  const users = getUsers();
+  const dogs = getDogs();
+
+  let filtered = dogs.filter(d => {
+    const owner = users.find(u => u.id === d.ownerId);
+    const ownerName = owner ? owner.name : (d.owner || '');
+    if (q && !(`${d.name} ${d.breed} ${ownerName}`.toLowerCase().includes(q))) return false;
+    if (breed && d.breed !== breed) return false;
+    if (gender && d.gender !== gender) return false;
+    if (onlyTests && (!d.tests || d.tests.length === 0)) return false;
+    return true;
+  });
+  filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  renderDogs(filtered);
+}
+
+/* ============================================================
+   КАРТОЧКА СОБАКИ
+   ============================================================ */
+function showDog(id) {
+  const d = getDogs().find(x => x.id === id);
+  if (!d) return;
+  const users = getUsers();
+  const owner = users.find(u => u.id === d.ownerId);
+  const me = currentUser();
+  const isMine = me && d.ownerId === me.id;
+
+  document.getElementById('modalImg').style.backgroundImage =
+    `url('${d.photo || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80'}')`;
+
+  let actionsHtml = '';
+  if (isMine) {
+    actionsHtml = `
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+        <button class="btn outline" style="flex:1" onclick="openEditForm(${d.id})">✏️  Редактировать</button>
+        <button class="btn danger" style="flex:1" onclick="deleteDog(${d.id})">🗑 Удалить</button>
+      </div>
+    `;
+  } else {
+    if (!me) {
+      actionsHtml = `<button class="btn" style="width:100%;margin-top:1rem;" onclick="requireAuth()">Войдите, чтобы написать владельцу</button>`;
+    } else if (owner) {
+      actionsHtml = `<button class="btn" style="width:100%;margin-top:1rem;" onclick="openMsgModal(${owner.id}, '${escapeAttr(d.name)}')">💬  Написать владельцу</button>`;
+    } else {
+      actionsHtml = `<div style="background:#fff0e2;padding:1rem;border-radius:10px;margin-top:1rem;text-align:center;">
+        Контакт: <b>${escapeHtml(d.contact || '—')}</b></div>`;
+    }
+  }
+
+document.getElementById('modalBody').innerHTML = `
+    <h2>${escapeHtml(d.name)}</h2>
+    <p class="subtitle">${escapeHtml(d.breed)} • ${escapeHtml(d.gender)} • ${d.age} ${ageWord(d.age)}</p>
+      <div class="modal-price">${formatPrice(d.price)}</div>
+
+    ${d.description ? `<div class="modal-desc">${escapeHtml(d.description)}</div>` : ''}
+
+
+    <div class="info-grid">
+      <div class="info-item"><strong>Health-тесты</strong>${(d.tests || []).map(escapeHtml).join(', ') || '—'}</div>
+      <div class="info-item"><strong>Титулы</strong>${(d.titles || []).map(escapeHtml).join(', ') || '—'}</div>
+      <div class="info-item"><strong>Город</strong>${escapeHtml(d.city || '—')}</div>
+      <div class="info-item"><strong>Владелец</strong>${escapeHtml(owner ? owner.name : (d.owner || '—'))}</div>
+      <div class="info-item"><strong>Контакт</strong>${escapeHtml(d.contact || '—')}</div>
+      <div class="info-item"><strong>Опубликовано</strong>${formatDate(d.createdAt)}</div>
+    </div>
+    ${(d.documents && d.documents.length) ? `
+      <div style="margin-top:1rem;">
+        <strong style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);">📄 Документы</strong>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0.5rem;margin-top:0.5rem;">
+          ${d.documents.map(src => `<img src="${src}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;" onclick="window.open('${src}','_blank')">`).join('')}
+        </div>
+      </div>` : ''}
+    ${(d.vaccines && d.vaccines.length) ? `
+      <div style="margin-top:1rem;">
+        <strong style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);">💉 Прививки</strong>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0.5rem;margin-top:0.5rem;">
+          ${d.vaccines.map(src => `<img src="${src}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;" onclick="window.open('${src}','_blank')">`).join('')}
+        </div>
+      </div>` : ''}
+    ${actionsHtml}
+  `;
+  document.getElementById('dogModal').classList.add('active');
+}
+
+/* ============================================================
+   ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ СОБАКИ
+   ============================================================ */
+function openAddForm() {
+  if (!currentUser()) { requireAuth(); return; }
+  const form = document.getElementById('addForm');
+  form.reset();
+  initDogCitySelect('');
+  form.editId.value = '';
+  photosData = [];
+  renderPhotosPreview();
+  docsData = [];
+  vaccinesData = [];
+  renderDocsPreview();
+  renderVaccinesPreview();
+  document.getElementById('addFormTitle').textContent = 'Новое объявление';
+  document.getElementById('addModal').classList.add('active');
+}
+
+function openEditForm(id) {
+  if (!currentUser()) { requireAuth(); return; }
+  const d = getDogs().find(x => x.id === id);
+  if (!d) return;
+  if (d.ownerId !== currentUser().id) { toast('Это не ваше объявление', 'error'); return; }
+
+  const form = document.getElementById('addForm');
+  form.name.value = d.name;
+  form.breed.value = d.breed;
+  form.gender.value = d.gender;
+  form.age.value = d.age;
+  form.contact.value = d.contact || '';
+  form.tests.value = (d.tests || []).join(', ');
+  form.titles.value = (d.titles || []).join(', ');
+  form.photo.value = d.photo || '';
+
+  form.price.value = d.price || '';
+  form.description.value = d.description || '';
+
+    form.editId.value = d.id;
+  initDogCitySelect(d.city || '');
+
+  // Загружаем ранее сохранённые документы и прививки
+  docsData = (d.documents || []).slice();
+  vaccinesData = (d.vaccines || []).slice();
+  renderDocsPreview();
+  renderVaccinesPreview();
+
+  document.getElementById('addFormTitle').textContent = 'Редактировать объявление';
+  closeModal('dogModal');
+  document.getElementById('addModal').classList.add('active');
+}
+
+function submitDog(e) {
+  e.preventDefault();
+  const me = currentUser();
+  if (!me) { requireAuth(); return; }
+
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  const editId = data.editId ? Number(data.editId) : null;
+
+    const payload = {
+    name: data.name.trim(),
+    breed: data.breed,
+    gender: data.gender,
+    age: Number(data.age),
+    contact: data.contact.trim(),
+    tests: data.tests ? data.tests.split(',').map(s => s.trim()).filter(Boolean) : [],
+    city: readCityFromForm(),
+    titles: data.titles ? data.titles.split(',').map(s => s.trim()).filter(Boolean) : [],
+    photo: (data.photo || '').trim(),
+    price: data.price ? Number(data.price) : 0,
+    description: (data.description || '').trim(),
+    documents: docsData.slice(),
+    vaccines: vaccinesData.slice()
+  };
+ 	
+if (!payload.city) {
+  toast('Укажите город', 'error');
+  return;
+}
+  const dogs = getDogs();
+
+  if (editId) {
+    const idx = dogs.findIndex(x => x.id === editId);
+    if (idx === -1 || dogs[idx].ownerId !== me.id) { toast('Ошибка: не найдено', 'error'); return; }
+    dogs[idx] = { ...dogs[idx], ...payload };
+    saveDogs(dogs);
+    toast('Объявление обновлено', 'success');
+  } else {
+    dogs.push({
+      id: Date.now(),
+      ownerId: me.id,
+      createdAt: Date.now(),
+      ...payload
+    });
+    saveDogs(dogs);
+    toast('Объявление опубликовано', 'success');
+  }
+
+  form.reset();
+  closeModal('addModal');
+  applyFilters();
+  docsData = [];
+  vaccinesData = [];
+  renderDocsPreview();
+  renderVaccinesPreview();
+  if (document.getElementById('page-cabinet').style.display !== 'none') renderCabinet();
+}
+
+function deleteDog(id) {
+  if (!confirm('Удалить это объявление?')) return;
+  const me = currentUser();
+  if (!me) return;
+  const dogs = getDogs();
+  const d = dogs.find(x => x.id === id);
+  if (!d || d.ownerId !== me.id) { toast('Нет прав', 'error'); return; }
+  saveDogs(dogs.filter(x => x.id !== id));
+  closeModal('dogModal');
+  toast('Объявление удалено', 'success');
+  applyFilters();
+  if (document.getElementById('page-cabinet').style.display !== 'none') renderCabinet();
+}
+
+/* ============================================================
+   АВТОРИЗАЦИЯ
+   ============================================================ */
+function openAuth() {
+
+document.getElementById('authError').style.display = 'none';
+  switchAuthTab('login');
+  document.getElementById('authModal').classList.add('active');
+}
+
+function requireAuth() {
+  closeModal('dogModal');
+  openAuth();
+  toast('Сначала войдите или зарегистрируйтесь');
+}
+
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('authError').style.display = 'none';
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const email = data.email.trim().toLowerCase();
+  const hash = simpleHash(data.password);
+
+  const users = getUsers();
+  const u = users.find(x => x.email.toLowerCase() === email);
+  if (!u) { showAuthError('Пользователь с таким email не найден'); return; }
+  if (u.passwordHash !== hash) { showAuthError('Неверный пароль'); return; }
+
+  login(u.id);
+  e.target.reset();
+  closeModal('authModal');
+  toast(`Добро пожаловать, ${u.name}!`, 'success');
+  showPage('cabinet');
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const email = data.email.trim().toLowerCase();
+  const name = data.name.trim();
+
+  const users = getUsers();
+  if (users.find(x => x.email.toLowerCase() === email)) {
+    showAuthError('Пользователь с таким email уже зарегистрирован');
+    return;
+  }
+
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    passwordHash: simpleHash(data.password),
+    role: data.role || 'owner',
+    createdAt: Date.now()
+  };
+  users.push(newUser);
+  saveUsers(users);
+
+  login(newUser.id);
+  e.target.reset();
+  closeModal('authModal');
+  toast(`Аккаунт создан. Добро пожаловать, ${name}!`, 'success');
+  showPage('cabinet');
+}
+
+/* ============================================================
+   КАБИНЕТ
+   ============================================================ */
+let cabinetTab = 'myDogs';
+
+function renderCabinet() {
+  const el = document.getElementById('cabinetContent');
+  const me = currentUser();
+  if (!me) {
+    el.innerHTML = `
+      <div class="empty">
+        <div class="big">🔒</div>
+        Войдите, чтобы открыть личный кабинет<br><br>
+        <button class="btn" onclick="openAuth()">Войти / Регистрация</button>
+      </div>`;
+    return;
+  }
+
+  const myDogs = getDogs().filter(d => d.ownerId === me.id);
+  const roleLabel = me.role === 'breeder' ? '🏆 Заводчик / питомник' : '🐕 Владелец собаки';
+  const initial = me.name.trim().charAt(0).toUpperCase();
+  const avatarInner = me.avatar
+  ? `<img src="${escapeAttr(me.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+  : escapeHtml(initial);
+
+  let contentHtml = '';
+  if (cabinetTab === 'myDogs') {
+    if (!myDogs.length) {
+      contentHtml = `<div class="empty"><div class="big">🐾 </div>У вас пока нет объявлений<br><br>
+        <button class="btn" onclick="openAddForm()">+ Добавить первое объявление</button></div>`;
+    } else {
+      contentHtml = `<div class="grid">${myDogs.map(d => `
+        <div class="card" onclick="showDog(${d.id})">
+          <div class="card-img" style="background-image:url('${escapeAttr(d.photo || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80')}')">
+            <span class="badge ${d.gender === 'Сука' ? 'female' : ''}">${escapeHtml(d.gender)}</span>
+            <span class="badge mine">Моё</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name">${escapeHtml(d.name)}</div>
+            <div class="card-breed">${escapeHtml(d.breed)} • ${d.age} ${ageWord(d.age)}</div>
+            <div class="card-date">📅 ${formatDate(d.createdAt)}</div>
+            <div class="card-price">${formatPrice(d.price)}</div>
+            ${d.description ? `<div class="card-desc">${escapeHtml(truncate(d.description, 90))}</div>` : ''}
+
+<div class="tags">
+              ${(d.tests || []).slice(0, 3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}</div>`;
+    }
+  } else if (cabinetTab === 'profile') {
+
+    const avatarContent = me.avatar
+      ? `<img src="${escapeAttr(me.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+      : escapeHtml(me.name.trim().charAt(0).toUpperCase());
+
+
+
+
+    contentHtml = `
+      <div style="max-width:500px;background:white;padding:1.5rem;border-radius:16px;border:1px solid var(--border);">
+
+	<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <div id="profileAvatarPreview" style="width:80px;height:80px;border-radius:50%;overflow:hidden;
+             background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;
+             display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;flex-shrink:0;">
+          ${avatarContent}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <input type="file" id="profileAvatarInput" accept="image/*" style="display:none"
+                 onchange="handleAvatarUpload(event)">
+            <button type="button" class="btn outline small"
+                  onclick="document.getElementById('profileAvatarInput').click()">
+              📷 Загрузить фото
+            </button>
+            ${me.avatar ? `<button type="button" class="btn outline small"
+                    onclick="removeAvatar()">🗑 Удалить</button>` : ''}
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label>📷 Фотографии собаки</label>
+
+          <input type="file" id="photosInput" accept="image/*" multiple style="display:none"
+                 onchange="handlePhotosUpload(event)">
+
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button type="button" class="btn outline"
+                    onclick="document.getElementById('photosInput').click()">
+              📁 Загрузить фото
+            </button>
+            <button type="button" class="btn outline"
+                    onclick="document.getElementById('photosInput').click()">
+              📷 Сфотографировать
+            </button>
+          </div>
+
+          <div id="photosPreview"
+               style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.6rem;margin-top:0.8rem;">
+          </div>
+
+          <div class="hint">
+            Первое фото — главное (обложка). Можно загрузить несколько. JPG, PNG. Сжимаются автоматически.
+          </div>
+
+          <label style="margin-top:0.8rem;font-weight:500;font-size:0.85rem;">
+            Или вставьте ссылку на фото (необязательно):
+          </label>
+          <input type="url" name="photo" placeholder="https://..."
+                 style="margin-top:0.3rem;">
+          <div class="hint">Ссылка будет добавлена как дополнительное фото, если нет загруженных.</div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" value="${escapeAttr(me.email)}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Роль</label>
+          <select id="profileRole">
+            <option value="owner" ${me.role === 'owner' ? 'selected' : ''}>Владелец собаки</option>
+            <option value="breeder" ${me.role === 'breeder' ? 'selected' : ''}>Заводчик / питомник</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Новый пароль (оставьте пустым, если не меняете)</label>
+          <input type="password" id="profilePwd" placeholder="минимум 6 символов">
+        </div>
+        <button class="btn" style="width:100%;" onclick="saveProfile()">Сохранить</button>
+      </div>
+    `;
+  } else if (cabinetTab === 'dialogs') {
+    const dialogs = getUserDialogs(me.id);
+    if (!dialogs.length) {
+      contentHtml = `<div class="empty"><div class="big">💬 </div>У вас пока нет диалогов<br><br>
+        <button class="btn" onclick="showPage('home')">Перейти в каталог</button></div>`;
+    } else {
+      contentHtml = `<div style="background:white;border-radius:16px;border:1px solid var(--border);overflow:hidden;">
+        ${dialogs.map(dlg => `
+          <div style="padding:1rem 1.2rem;border-bottom:1px solid var(--border);cursor:pointer;"
+               onclick="openChatWith(${dlg.partnerId})">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+              <b>${escapeHtml(dlg.partnerName)}</b>
+              ${dlg.unread ? `<span class="unread-badge">${dlg.unread}</span>` : ''}
+            </div>
+            <div style="color:var(--muted);font-size:0.9rem;margin-top:0.2rem;">${escapeHtml(dlg.lastText)}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+  }
+
+  el.innerHTML = `
+    <div class="cabinet-header">
+      <div class="cabinet-avatar" style="overflow:hidden;">${avatarInner}</div>
+      <div class="cabinet-info">
+        <h2>${escapeHtml(me.name)}</h2>
+        <p>${roleLabel} • ${escapeHtml(me.email)}</p>
+        <p style="margin-top:0.3rem;">Объявлений: <b>${myDogs.length}</b></p>
+      </div>
+      <button class="btn btn-add" onclick="openAddForm()">+ Добавить собаку</button>
+    </div>
+
+    <div class="cabinet-tabs">
+      <button class="${cabinetTab === 'myDogs' ? 'active' : ''}" onclick="setCabinetTab('myDogs')">🐕 Мои собаки</button>
+      <button class="${cabinetTab === 'dialogs' ? 'active' : ''}" onclick="setCabinetTab('dialogs')">💬  Диалоги</button>
+       <button class="${cabinetTab === 'profile' ? 'active' : ''}" onclick="setCabinetTab('profile')">⚙️  Профиль</button>
+    </div>
+
+    <div id="cabinetInner">${contentHtml}</div>
+  `;
+}
+
+function setCabinetTab(t) { cabinetTab = t; renderCabinet(); }
+
+function saveProfile() {
+  const me = currentUser();
+  if (!me) return;
+
+  const name = document.getElementById('profileName').value.trim();
+  const role = document.getElementById('profileRole').value;
+  const pwd  = document.getElementById('profilePwd').value;
+
+  if (!name || name.length < 2) {
+    toast('Имя слишком короткое', 'error');
+    return;
+  }
+  if (pwd && pwd.length < 6) {
+    toast('Пароль минимум 6 символов', 'error');
+    return;
+  }
+
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === me.id);
+  if (idx === -1) {
+    toast('Пользователь не найден', 'error');
+    return;
+  }
+
+  users[idx].name = name;
+  users[idx].role = role;
+
+  // Если ввели новый пароль — обновляем хеш
+  if (pwd) {
+    users[idx].passwordHash = simpleHash(pwd);
+  }
+
+  saveUsers(users);       // 👈 СОХРАНЕНИЕ В LOCALSTORAGE
+
+  // Обновляем UI
+  renderAuthArea();
+  renderCabinet();
+
+  toast('Профиль сохранён', 'success');
+}
+
+function handleAvatarUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Только изображения', 'error'); return; }
+  if (file.size > 3 * 1024 * 1024) { toast('Файл больше 3 МБ', 'error'); return; }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // Сжимаем до 400×400
+      const canvas = document.createElement('canvas');
+      const size = 400;
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Обрезаем по центру под квадрат
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide) / 2;
+      const sy = (img.height - minSide) / 2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+      // Сохраняем в пользователя
+      const me = currentUser();
+      if (!me) return;
+      const users = getUsers();
+      const idx = users.findIndex(u => u.id === me.id);
+      if (idx === -1) return;
+      users[idx].avatar = dataUrl;
+      saveUsers(users);
+
+      // Обновляем превью
+      const prev = document.getElementById('profileAvatarPreview');
+      if (prev) prev.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+
+      renderAuthArea();
+      toast('Фото профиля обновлено', 'success');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatar() {
+  const me = currentUser();
+  if (!me) return;
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === me.id);
+  if (idx === -1) return;
+  delete users[idx].avatar;
+  saveUsers(users);
+  renderAuthArea();
+  renderCabinet();
+  toast('Фото удалено', 'success');
+}
+
+
+
+function openChatWith(partnerId) {
+  activeChatPartnerId = partnerId;
+  showPage('chat');
+}
+
+function openMsgModal(toUserId, subject) {
+  if (!currentUser()) { requireAuth(); return; }
+  document.getElementById('msgToUserId').value = toUserId;
+  document.getElementById('msgSubject').value = 'Вязка: ' + subject;
+  const partner = getUsers().find(u => u.id === toUserId);
+  document.getElementById('msgSubtitle').textContent = partner ? 'Кому: ' + partner.name : '';
+  document.getElementById('msgModal').classList.add('active');
+}
+
+function sendFirstMessage(e) {
+  e.preventDefault();
+  const me = currentUser();
+  if (!me) { requireAuth(); return; }
+  const data = Object.fromEntries(new FormData(e.target));
+  const toUserId = Number(data.toUserId);
+  const text = data.text.trim();
+  if (!text) return;
+
+  const msgs = getMessages();
+  msgs.push({
+    id: Date.now() + Math.random(),
+    from: me.id,
+    to: toUserId,
+    text,
+    subject: data.subject || '',
+    createdAt: Date.now(),
+    read: false
+  });
+  saveMessages(msgs);
+
+  e.target.reset();
+  closeModal('msgModal');
+  closeModal('dogModal');
+  toast('Сообщение отправлено', 'success');
+  activeChatPartnerId = toUserId;
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+  showPage('chat');
+}
+
+function sendChatMessage() {
+  const me = currentUser();
+  if (!me || !activeChatPartnerId) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const msgs = getMessages();
+  msgs.push({
+    id: Date.now() + Math.random(),
+    from: me.id,
+    to: activeChatPartnerId,
+    text,
+    createdAt: Date.now(),
+    read: false
+  });
+  saveMessages(msgs);
+  input.value = '';
+  renderChat();
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+}
+
+
+function deleteMessage(messageId) {
+  const me = currentUser();
+  if (!me) return;
+
+  const msgs = getMessages();
+  const msg = msgs.find(m => String(m.id) === String(messageId));
+
+  // Удалять можно только свои сообщения
+  if (!msg || msg.from !== me.id) {
+    toast('Можно удалять только свои сообщения', 'error');
+    return;
+  }
+
+  if (!confirm('Удалить это сообщение?')) return;
+
+  saveMessages(msgs.filter(m => String(m.id) !== String(messageId)));
+  renderChat();
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+  toast('Сообщение удалено', 'success');
+}
+
+/* ============================================================
+   ФОТОГРАФИИ СОБАКИ (несколько)
+   ============================================================ */
+let photosData = [];
+
+function handlePhotosUpload(event) {
+  const files = Array.from(event.target.files || []);
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressImage(e.target.result, 1400, dataUrl => {
+        photosData.push(dataUrl);
+        renderPhotosPreview();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function renderPhotosPreview() {
+  const el = document.getElementById('photosPreview');
+  if (!el) return;
+  el.innerHTML = photosData.map((src, i) => `
+    <div style="position:relative;">
+      <img src="${src}"
+           style="width:100%;height:110px;object-fit:cover;border-radius:8px;
+                  border:2px solid ${i === 0 ? 'var(--primary)' : 'var(--border)'};">
+      ${i === 0 ? `<span style="position:absolute;bottom:4px;left:4px;background:var(--primary);
+                    color:white;font-size:0.65rem;padding:0.15rem 0.4rem;border-radius:4px;
+                    font-weight:700;">Главное</span>` : ''}
+      <button type="button" onclick="removePhoto(${i})"
+        style="position:absolute;top:4px;right:4px;background:var(--danger);color:white;
+               border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;
+               font-size:0.7rem;">✕</button>
+      ${i > 0 ? `<button type="button" onclick="makeMainPhoto(${i})"
+        title="Сделать главной"
+        style="position:absolute;bottom:4px;right:4px;background:white;color:var(--primary-dark);
+               border:1px solid var(--border);border-radius:50%;width:22px;height:22px;
+               cursor:pointer;font-size:0.7rem;">★</button>` : ''}
+    </div>
+  `).join('');
+}
+
+function removePhoto(i) {
+  photosData.splice(i, 1);
+  renderPhotosPreview();
+}
+
+function makeMainPhoto(i) {
+  const [p] = photosData.splice(i, 1);
+  photosData.unshift(p);
+  renderPhotosPreview();
+}
+
+/* Возвращает массив фотографий собаки (с учётом старого поля photo) */
+function getDogPhotos(d) {
+  if (Array.isArray(d.photos) && d.photos.length) return d.photos;
+  if (d.photo) return [d.photo];
+  return [];
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function formatTime(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  if (sameDay) return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }) + ' ' +
+         d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+
+function formatDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  const now = new Date();
+  const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'сегодня';
+  if (diffDays === 1) return 'вчера';
+  if (diffDays < 7) return `${diffDays} ${dayWord(diffDays)} назад`;
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+function dayWord(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'день';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'дня';
+  return 'дней';
+}
+
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function escapeAttr(s) {
+  return String(s == null ? '' : s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+let toastTimer = null;
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 2800);
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  initDemoData();
+  renderAuthArea();
+  applyFilters();
+  try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+
+  // Закрытие модалок по клику вне и по Esc
+  document.querySelectorAll('.modal-overlay').forEach(ov => {
+    ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active'); });
+  });
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(o => o.classList.remove('active'));
+  });
+
+  // Enter в поиске
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') applyFilters();
+  });
+
+  // Обновление чата раз в 3 секунды, если открыт
+  setInterval(() => {
+    if (document.getElementById('page-chat').style.display !== 'none') {
+      try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {}
+      // Тихое обновление списка диалогов и текущего чата (без перерендера, если ничего не изменилось)
+      if (activeChatPartnerId) {
+        const me = currentUser();
+        if (me) {
+          const msgs = getMessages();
+          let changed = false;
+          msgs.forEach(m => {
+            if (m.from === activeChatPartnerId && m.to === me.id && !m.read) { m.read = true; changed = true; }
+          });
+          if (changed) { saveMessages(msgs); renderChat(); try { try { renderUnreadBadge(); } catch(e) {} } catch(e) {} }
+        }
+      }
+    }
+  }, 3000);
+});
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ СЕЛЕКТОВ ГОРОДОВ
+   ============================================================ */
+function initDogCitySelect(selected) {
+  const sel = document.getElementById('dogCitySelect');
+  if (!sel) return;
+  sel.innerHTML = cityOptionsHtml(selected);
+  // Показать/скрыть поле «Другой город» в зависимости от выбора
+  const custom = document.getElementById('dogCityCustom');
+  if (custom) {
+    if (selected && !CITIES.includes(selected)) {
+      sel.value = '__other__';
+      custom.value = selected;
+      custom.style.display = 'block';
+    } else {
+      custom.value = '';
+      custom.style.display = 'none';
+    }
+  }
+}
+
+function handleCityChange(selectEl, customInputId) {
+  const custom = document.getElementById(customInputId);
+  if (!custom) return;
+  if (selectEl.value === '__other__') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+    custom.value = '';
+  }
+}
+
+function readCityFromForm(from) {
+  const sel = document.getElementById('dogCitySelect');
+  const custom = document.getElementById('dogCityCustom');
+  if (!sel) return '';
+  if (sel.value === '__other__') {
+    return (custom && custom.value.trim()) || '';
+  }
+  return sel.value;
+}
+
+
+
+function formatPrice(price) {
+  if (price === undefined || price === null || price === '' || Number(price) === 0) {
+    return 'Договорная';
+  }
+  return Number(price).toLocaleString('ru-RU') + ' ₽';
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n).trim() + '…' : str;
+}
+
+
+/* ============================================================
+   НЕПРОЧИТАННЫЕ СООБЩЕНИЯ
+   ============================================================ */
+function getTotalUnread() {
+  const me = currentUser();
+  if (!me) return 0;
+  const msgs = getMessages();
+  return msgs.filter(m => m.to === me.id && !m.read).length;
+}
+
+function renderUnreadBadge() {
+  const badge = document.getElementById('unreadTotal');
+  if (!badge) return;
+  const count = getTotalUnread();
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+/* ============================================================
+   ДИАЛОГИ И ЧАТ
+   ============================================================ */
+let activeChatPartnerId = null;
+
+function getUserDialogs(userId) {
+  const msgs = getMessages().filter(m => m.from === userId || m.to === userId);
+  const users = getUsers();
+  const dialogsMap = {};
+
+  msgs.forEach(m => {
+    const partnerId = m.from === userId ? m.to : m.from;
+    if (!dialogsMap[partnerId]) {
+      const partner = users.find(u => u.id === partnerId);
+      dialogsMap[partnerId] = {
+        partnerId,
+        partnerName: partner ? partner.name : 'Пользователь',
+        lastText: '',
+        lastTime: 0,
+        unread: 0
+      };
+    }
+    if (m.createdAt > dialogsMap[partnerId].lastTime) {
+      dialogsMap[partnerId].lastTime = m.createdAt;
+      dialogsMap[partnerId].lastText = m.text;
+    }
+    if (m.to === userId && !m.read) {
+      dialogsMap[partnerId].unread++;
+    }
+  });
+
+  return Object.values(dialogsMap).sort((a, b) => b.lastTime - a.lastTime);
+}
+
+function renderChat() {
+  const container = document.getElementById('chatContainer');
+  const me = currentUser();
+  if (!me) {
+    container.innerHTML = `<div class="chat-empty"><div class="big">🔒</div>Войдите, чтобы общаться</div>`;
+    return;
+  }
+
+  const dialogs = getUserDialogs(me.id);
+  const partner = activeChatPartnerId
+    ? getUsers().find(u => u.id === activeChatPartnerId)
+    : null;
+
+  let messagesHtml = '';
+  if (activeChatPartnerId && partner) {
+    const msgs = getMessages()
+      .filter(m =>
+        (m.from === me.id && m.to === activeChatPartnerId) ||
+        (m.from === activeChatPartnerId && m.to === me.id)
+      )
+      .sort((a, b) => a.createdAt - b.createdAt);
+
+    if (msgs.length === 0) {
+      messagesHtml = `<div class="chat-empty"><div class="big">💬</div>Начните диалог</div>`;
+    } else {
+      messagesHtml = msgs.map(m => `
+        <div class="msg ${m.from === me.id ? 'me' : 'them'}">
+          ${m.from === me.id ? `<button class="msg-delete" title="Удалить сообщение" onclick="event.stopPropagation();deleteMessage('${m.id}')">🗑</button>` : ''}
+          ${escapeHtml(m.text)}
+          <div class="msg-time">${formatTime(m.createdAt)}</div>
+        </div>
+      `).join('');
+    }
+  } else {
+    messagesHtml = `<div class="chat-empty"><div class="big">💬</div>Выберите диалог слева</div>`;
+  }
+
+  container.innerHTML = `
+    <div class="chat-layout">
+      <div class="chat-sidebar">
+        <div class="chat-sidebar-header">Диалоги (${dialogs.length})</div>
+        ${dialogs.length === 0
+          ? '<div style="padding:1rem;color:var(--muted);font-size:0.9rem;">Нет диалогов</div>'
+          : dialogs.map(d => `
+            <div class="dialog-item ${d.partnerId === activeChatPartnerId ? 'active' : ''}"
+                 onclick="openChatWith(${d.partnerId})">
+              <div class="name">
+                <span>${escapeHtml(d.partnerName)}</span>
+                ${d.unread ? `<span class="unread-badge">${d.unread}</span>` : ''}
+              </div>
+              <div class="last-msg">${escapeHtml(d.lastText)}</div>
+            </div>
+          `).join('')}
+      </div>
+      <div class="chat-main">
+        ${activeChatPartnerId && partner ? `
+          <div class="chat-header">
+            <span>${escapeHtml(partner.name)}</span>
+          </div>
+          <div class="chat-messages" id="chatMessages">${messagesHtml}</div>
+          <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Написать сообщение..."
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();sendChatMessage();}">
+            <button onclick="sendChatMessage()">Отправить</button>
+          </div>
+        ` : `
+          <div class="chat-empty"><div class="big">💬</div>Выберите диалог слева</div>
+        `}
+      </div>
+    </div>
+  `;
+
+  const msgsEl = document.getElementById('chatMessages');
+  if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+}/* ============================================================
+   ЗАГРУЗКА ДОКУМЕНТОВ И ПРИВИВОК
+   ============================================================ */
+let docsData = [];
+let vaccinesData = [];
+
+function handleDocsUpload(event) {
+  const files = Array.from(event.target.files || []);
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressImage(e.target.result, 1200, dataUrl => {
+        docsData.push(dataUrl);
+        renderDocsPreview();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function handleVaccinesUpload(event) {
+  const files = Array.from(event.target.files || []);
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressImage(e.target.result, 1200, dataUrl => {
+        vaccinesData.push(dataUrl);
+        renderVaccinesPreview();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function compressImage(dataUrl, maxSize, callback) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    let w = img.width, h = img.height;
+    if (w > maxSize || h > maxSize) {
+      if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+      else { w = Math.round(w * maxSize / h); h = maxSize; }
+    }
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.8));
+  };
+  img.src = dataUrl;
+}
+
+function renderDocsPreview() {
+  const el = document.getElementById('docsPreview');
+  if (!el) return;
+  el.innerHTML = docsData.map((src, i) => `
+    <div style="position:relative;">
+      <img src="${src}" style="width:100%;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
+      <button type="button" onclick="removeDoc(${i})"
+        style="position:absolute;top:4px;right:4px;background:var(--danger);color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.7rem;">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderVaccinesPreview() {
+  const el = document.getElementById('vaccinesPreview');
+  if (!el) return;
+  el.innerHTML = vaccinesData.map((src, i) => `
+    <div style="position:relative;">
+      <img src="${src}" style="width:100%;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
+      <button type="button" onclick="removeVaccine(${i})"
+        style="position:absolute;top:4px;right:4px;background:var(--danger);color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.7rem;">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeDoc(i) { docsData.splice(i, 1); renderDocsPreview(); }
+function removeVaccine(i) { vaccinesData.splice(i, 1); renderVaccinesPreview(); }
+
+/* ============================================================
+   ПАТЧ: сохранение документов и прививок в submitDog()
+   ============================================================ */
+
+</script>
+
+</body>
+</html>
